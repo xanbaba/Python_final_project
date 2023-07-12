@@ -1,4 +1,1 @@
-{
-  "Money": 100,
-  "Games": []
-}
+{"money": 2, "games": [1, 5, 8], "deleted_games": [6, 3]}
