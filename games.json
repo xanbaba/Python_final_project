@@ -1,45 +1,54 @@
 [
   {
+    "id": 0,
     "name": "Cs:Go",
     "price": 0,
     "image": "images/csgo.jpg"
   },
   {
+    "id": 1,
     "name": "Call of Duty: Vanguard",
     "price": 30,
     "image": "images/CODV.jpg"
   },
   {
+    "id": 2,
     "name": "Detroit: Become Human",
     "price": 10,
     "image": "images/Detroit.png"
   },
   {
+    "id": 3,
     "name": "Одни из нас: Часть I",
     "price": 50,
     "image": "images/The_Last_of_Us_Part_I.png"
   },
   {
+    "id": 4,
     "name": "Red Dead Redemption 2",
     "price": 35,
     "image": "images/Red_Dead_Redemption_2.jpg"
   },
   {
+    "id": 5,
     "name": "Rust",
     "price": 20,
     "image": "images/Rust.png"
   },
   {
+    "id": 6,
     "name": "Call of Duty: Black Ops Cold War",
     "price": 60,
     "image": "images/Cold_war.png"
   },
   {
+    "id": 7,
     "name": "Forza Horizon 5",
     "price": 35,
     "image": "images/Forza_Horizon_5.jpg"
   },
   {
+    "id": 8,
     "name": "GTA V",
     "price": 34,
     "image": "images/GTAV.jpg"
