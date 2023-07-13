@@ -9,3 +9,5 @@ There is instuction for Windows users:
 4. activate virtual environment using ```venv\Scripts\activate``` command
 5. then install all needed packages from requirements.txt file using ```pip install -r requirements.txt``` command
 6. Now you can run the program using ```python main.py``` command
+
+> :warning: **DON'T COMMIT AND PUSH THE "user_data.json" FILE**
