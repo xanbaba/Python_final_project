@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 def add_money(button='+'):
     global add_money_flag, add_money_frame, coins_label_amount
     if not add_money_flag and button == '+':
-        add_money_frame.place(in_=win, anchor="c", relx=.5, rely=.5)
+        add_money_frame.place(in_=win, anchor="center", relx=.5, rely=.5)
         add_money_flag = True
         games_main_frame.forget()
         user_data["money"] += 10
@@ -20,10 +20,10 @@ def add_money(button='+'):
         games_main_frame.pack(expand=True, fill="both")
 
 
-def create_price_btn(price, text, game_index):
+def create_price_btn(price, text, game_index_):
     global buy_buttons_list
     buy_buttons_list.append(tk.Button(game_name_frame, text=text, background="#0e1d36", foreground="gray",
-                                      font=("Helvetica", 17), command=lambda: buy_game(price, game_index),
+                                      font=("Helvetica", 17), command=lambda: buy_game(price, game_index_),
                                       wraplength=270))
     buy_buttons_list[-1].pack(side="bottom")
 
