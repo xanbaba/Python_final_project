@@ -10,7 +10,7 @@ def get_user_data(filename):
         return json.load(file)
 
 
-def uptade_user_data(filename, data):
+def update_user_data(filename, data):
     with open(filename, "w", encoding="utf-8") as file:
         json.dump(data, file)
 
@@ -26,6 +26,7 @@ def switch_my_games():
         games_main_frame.pack_forget()
         my_games_main_frame.pack(expand=True, fill="both")
         switch_page_button.configure(text="Все игры")
+        load_my_games(installed_games_frame, installed_games_frames, installed_buttons_list)
         my_games_flag = True
 
 
@@ -45,7 +46,7 @@ def add_money(action="open"):
         add_money_frame.lift()
 
         user_data["money"] += 10
-        uptade_user_data(user_data_filename, user_data)
+        update_user_data(user_data_filename, user_data)
 
         coins_label_amount.configure(text=user_data["money"])
 
@@ -61,17 +62,20 @@ def buy_game(price, index, buttons_list):
     user_money = user_data["money"]
     if index in user_data["games"]:
         buttons_list[index].configure(text="Добавить")
+        all_buttons_list[index].configure(text="Добавить")
         user_data["games"].remove(index)
         user_data["deleted_games"].append(index)
         games_amount.configure(text=int(games_amount["text"]) - 1)
     elif index in user_data["deleted_games"]:
         buttons_list[index].configure(text="Удалить")
+        all_buttons_list[index].configure(text="Удалить")
         user_data["games"].append(index)
         user_data["deleted_games"].remove(index)
         games_amount.configure(text=int(games_amount["text"]) + 1)
     else:
         if user_money >= price:
             buttons_list[index].configure(text="Удалить")
+            all_buttons_list[index].configure(text="Удалить")
             user_data["games"].append(index)
             user_data["money"] -= price
             coins_label_amount.configure(text=int(coins_label_amount["text"]) - price)
@@ -86,7 +90,7 @@ def buy_game(price, index, buttons_list):
             money_info_label.place(in_=games_main_frame, relx=0.5, rely=0.90, anchor="n", )
             win.after(2000, lambda: money_info_label.place_forget())
 
-    uptade_user_data(user_data_filename, user_data)
+    update_user_data(user_data_filename, user_data)
 
 
 def create_game_frames(games_list, main_frame, frames, buttons_list, is_owned=False, page_index=0,
@@ -102,6 +106,8 @@ def create_game_frames(games_list, main_frame, frames, buttons_list, is_owned=Fa
     :param frames: list where to save added frames
     """
 
+    global installed_games_count, deleted_games_count
+
     for i in range(len(games_list)):
         if i % 3 == 0:
             frames.append(tk.Frame(main_frame, background="#02070f"))
@@ -113,13 +119,28 @@ def create_game_frames(games_list, main_frame, frames, buttons_list, is_owned=Fa
 
         show_game(frame, image, name, price, index, buttons_list, is_owned, load_type)
 
+    count = 0
+
+    if load_type == "installed" and is_owned:
+        count = installed_games_count
+    elif load_type == "deleted" and is_owned:
+        count = deleted_games_count
+
     try:
         frames[page_index].pack(expand=True)
     except IndexError:
         try:
             frames[page_index - 1].pack(expand=True)
+            if is_owned:
+                count -= 1
         except IndexError:
-            pass
+            if is_owned:
+                count = 0
+
+    if load_type == "installed" and is_owned:
+        installed_games_count = count
+    elif load_type == "deleted" and is_owned:
+        deleted_games_count = count
 
 
 def show_game(frame, image, name, price, index, buttons_list, is_owned=False, load_type="installed"):
@@ -179,15 +200,12 @@ def switch_page(frames, frames_type, button, count):
 
     if button == '+':
         if count + 1 >= len(frames):
-            print(1)
             return
         frames[count].pack_forget()
         count += 1
 
     elif button == '-':
-        print(count, frames_type, installed_games_count)
         if count - 1 < 0:
-            print(2)
             return
         frames[count].pack_forget()
         count -= 1
@@ -217,11 +235,11 @@ def load_my_games(main_frame, frames, buttons_list, load_type="installed", page_
     if load_type == "installed":
         games_indexes = user_data["games"]
         deleted_games_frame.pack_forget()
-        installed_games_count = 0
+        installed_games_count = page_count
     else:
         games_indexes = user_data["deleted_games"]
         installed_games_frame.pack_forget()
-        deleted_games_count = 0
+        deleted_games_count = page_count
 
     games_list = []
     for index in games_indexes:
@@ -324,12 +342,13 @@ my_games_btn_frame = tk.Frame(my_games_main_frame, background="#02070f")
 my_games_btn_frame.pack(fill="x", pady=30)
 
 tk.Button(my_games_btn_frame, text="Установленные игры", background="#1a3259", font=40, foreground="gray",
-          command=lambda: load_my_games(installed_games_frame, installed_games_frames, installed_buttons_list)).pack(
+          command=lambda: (load_my_games(installed_games_frame, installed_games_frames, installed_buttons_list),
+                           my_games_title.configure(text="Установленные игры:"))).pack(
     side="left", padx=25)
 tk.Button(my_games_btn_frame, text="Удалённые игры", background="#1a3259", font=40, foreground="gray",
-          command=lambda: load_my_games(deleted_games_frame, deleted_games_frames, deleted_buttons_list,
-                                        load_type="deleted")) \
-    .pack(side="left", padx=25)
+          command=lambda: (load_my_games(deleted_games_frame, deleted_games_frames, deleted_buttons_list,
+                                         load_type="deleted"), my_games_title.configure(text="Удалённые игры:"))).pack(
+    side="left", padx=25)
 
 my_games_title = tk.Label(my_games_main_frame, text="Установленные игры:", foreground="white", font=("Helvetica", 20),
                           background="#02070f", anchor="w")
@@ -361,7 +380,5 @@ tk.Button(deleted_games_frame, text=">", background="#1a3259", font=40, foregrou
 deleted_games_frames = []
 deleted_buttons_list = {}
 deleted_games_count = 0
-
-load_my_games(installed_games_frame, installed_games_frames, installed_buttons_list)
 
 win.mainloop()
