@@ -52,5 +52,41 @@
     "name": "GTA V",
     "price": 34,
     "image": "images/GTAV.jpg"
+  },
+  {
+    "id": 9,
+    "name": "Battlefield 1",
+    "price": 40,
+    "image": "images/Battlefield1.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Battlefield V",
+    "price": 50,
+    "image": "images/Battlefield5.jpg"
+  },
+  {
+    "id": 11,
+    "name": "PUBG: BATTLEGROUNDS",
+    "price": 0,
+    "image": "images/PUBG.jpg"
+  },
+  {
+    "id": 12,
+    "name": "Hearts of Iron IV",
+    "price": 27,
+    "image": "images/HOIV.jpg"
+  },
+  {
+    "id": 13,
+    "name": "FIFA 23",
+    "price": 70,
+    "image": "images/FIFA23.jpg"
+  },
+  {
+    "id": 14,
+    "name": "Apex Legends",
+    "price": 0,
+    "image": "images/APEX.jpg"
   }
 ]
