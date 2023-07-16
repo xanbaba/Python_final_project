@@ -52,7 +52,8 @@ def buy_game(price, game_index_, my_games_page=False):
         coins_label_amount.configure(text=coins_amount)
         buy_buttons_list[game_index_].configure(text="Удалить")
         money_info_label.configure(text="Игра успешно куплена", background="#117804")
-        money_info_label.place(in_=games_main_frame, relx=0.5, rely=0.90, anchor="n",)
+        games_amount.configure(text=int(games_amount["text"]) + 1)
+        money_info_label.place(in_=games_main_frame, relx=0.5, rely=0.90, anchor="n", )
         # money_info_label.pack(pady=35, ipadx=10, ipady=10)
         win.after(2000, lambda: money_info_label.place_forget())
 
@@ -60,14 +61,16 @@ def buy_game(price, game_index_, my_games_page=False):
         user_data["deleted_games"].remove(game_index_)
         user_data["games"].append(game_index_)
         buy_buttons_list[game_index_].configure(text="Удалить")
+        games_amount.configure(text=int(games_amount["text"]) + 1)
         load_my_games("installed")
     elif buying_game in user_data["games"]:
         user_data["games"].remove(game_index_)
         user_data["deleted_games"].append(game_index_)
+        games_amount.configure(text=int(games_amount["text"]) - 1)
         buy_buttons_list[game_index_].configure(text="Добавить")
     elif user_data["money"] < price:
         money_info_label.configure(text="Недостаточно средств", background="#c20d04")
-        money_info_label.place(in_=games_main_frame, relx=0.5, rely=0.90, anchor="n",)
+        money_info_label.place(in_=games_main_frame, relx=0.5, rely=0.90, anchor="n", )
         win.after(2000, lambda: money_info_label.place_forget())
         return
 
@@ -80,36 +83,48 @@ def buy_game(price, game_index_, my_games_page=False):
 
 
 def switch_page(button, frames, is_owned=False):
-    global page_count, current_games_frame, current_my_games_frame
+    global games_page_count, current_games_frame, current_my_games_frame, my_games_page_count
+    if is_owned:
+        count = my_games_page_count
+    else:
+        count = games_page_count
     if button == '+':
-        if page_count + 1 >= len(frames):
+        if count + 1 >= len(frames):
+            print("1 er")
             return
-        page_count += 1
+        count += 1
+        print("next")
     elif button == '-':
-        if page_count - 1 < 0:
+        print(count)
+        if count - 1 < 0:
+            print("2 er")
             return
-        page_count -= 1
-
+        count -= 1
+        print("previous")
+    print(count)
     if is_owned:
         current_my_games_frame.forget()
-        current_my_games_frame = frames[page_count]
+        current_my_games_frame = frames[count]
         current_my_games_frame.pack(expand=True)
+        my_games_page_count = count
 
-        return
-    current_games_frame.forget()
-    current_games_frame = frames[page_count]
-    current_games_frame.pack(expand=True)
+    else:
+        current_games_frame.forget()
+        current_games_frame = frames[count]
+        current_games_frame.pack(expand=True)
+        games_page_count = count
 
 
 def my_games():
     global my_games_flag
     if not my_games_flag:
         games_main_frame.forget()
+        load_my_games("installed")
+        switch_my_games("installed")
         my_games_frame.pack(expand=True, fill="both")
         switch_page_button.configure(text="Все игры")
         my_games_flag = True
-        load_my_games("installed")
-        load_my_games("deleted")
+
     else:
         my_games_frame.forget()
         games_main_frame.pack(expand=True, fill="both")
@@ -178,7 +193,7 @@ coins_amount_add = tk.Button(top_bar, text="+", background="#1a3259", font=("Hel
 coins_amount_add.pack(side="left", ipadx=10, padx=10)
 tk.Label(top_bar, background="#0e1d36").pack(side="left", padx=20)
 tk.Label(top_bar, text="В вашей библиотеке ", background="#0e1d36", font=40, foreground="gray").pack(side="left")
-games_amount = tk.Label(top_bar, text="0", background="#0e1d36", font=40, foreground="gray")
+games_amount = tk.Label(top_bar, text=f"{len(user_data['games'])}", background="#0e1d36", font=40, foreground="gray")
 games_amount.pack(side="left")
 
 tk.Label(top_bar, text=" игр", background="#0e1d36", font=40, foreground="gray").pack(side="left")
@@ -220,7 +235,6 @@ buy_buttons_list = []
 for i in range(len(games_list)):
     if i % 3 == 0:
         games_frames.append(tk.Frame(games_main_frame, background="#02070f"))
-    games_list[i]["frame"] = len(games_frames)
     game_frame = tk.Frame(games_frames[-1], height=350, width=300, background="#0e1d36")
     image = ImageTk.PhotoImage(Image.open(games_list[i]["image"]).resize((300, 300)))
     game_name = games_list[i]["name"]
@@ -233,7 +247,7 @@ current_games_frame.pack(expand=True)
 
 money_info_label = tk.Label(games_main_frame, text="Недостаточно средств.", font=("Helvetica", 20), foreground="white")
 
-page_count = 0
+games_page_count = 0
 
 # MY Games
 
@@ -271,13 +285,15 @@ my_games_btn_list = []
 # deleted_games_frame.pack()
 current_my_games_frame = None
 
+my_games_page_count = 0
+
 
 def load_my_games(game_type):
     """
     :param game_type: "installed" or "deleted"
     """
-    global page_count, current_my_games_frame
-    page_count = 0
+    global my_games_page_count, current_my_games_frame
+    my_games_page_count = 0
     my_games_btn_list.clear()
     with open("user_data.json") as file:
         user_data_ = json.load(file)
@@ -302,13 +318,16 @@ def load_my_games(game_type):
     for index in range(len(games_list_)):
         if index % 3 == 0:
             games_frames_.append(tk.Frame(page_frame, background="#02070f"))
-
         game_frame_ = tk.Frame(games_frames_[-1], height=350, width=300, background="#0e1d36")
         image_ = ImageTk.PhotoImage(Image.open(games_list_[index]["image"]).resize((300, 300)))
         game_name_ = games_list_[index]["name"]
         game_price_ = games_list_[index]["price"]
         game_index_ = games_list_[index]["id"]
         show_game(game_frame_, image_, game_name_, game_price_, game_index_, True)
+    # try:
+    #     current_my_games_frame.pack_forget()
+    # except AttributeError:
+    #     pass
     current_my_games_frame = games_frames_[0]
     current_my_games_frame.pack(expand=True)
 
