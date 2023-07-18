@@ -236,6 +236,7 @@ def load_my_games(main_frame, frames, buttons_list, load_type="installed", page_
         games_indexes = user_data["games"]
         deleted_games_frame.pack_forget()
         installed_games_count = page_count
+        my_games_title.configure(text="Установленные игры")
     else:
         games_indexes = user_data["deleted_games"]
         installed_games_frame.pack_forget()
@@ -276,7 +277,7 @@ coins_label_amount.pack(side=tk.LEFT)
 tk.Label(top_bar, text="$", background="#0e1d36", font=20, foreground="yellow").pack(side="left")
 
 coins_amount_add = tk.Button(top_bar, text="+", background="#1a3259", font=("Helvetica", 17),
-                             command=lambda: add_money(), foreground="gray")
+                             command=lambda: add_money(), foreground="gray", relief="flat")
 coins_amount_add.pack(side="left", ipadx=10, padx=10)
 
 tk.Label(top_bar, text="В вашей библиотеке ", background="#0e1d36", font=40, foreground="gray").pack(side="left")
@@ -285,7 +286,7 @@ games_amount.pack(side="left")
 tk.Label(top_bar, text=" игр", background="#0e1d36", font=40, foreground="gray").pack(side="left")
 
 switch_page_button = tk.Button(top_bar, text="Мои игры", background="#1a3259", font=40, foreground="gray",
-                               command=switch_my_games)
+                               command=switch_my_games, relief="flat")
 switch_page_button.pack(side="right", padx=40)
 
 top_bar.pack(fill="x")
@@ -314,10 +315,10 @@ close_money_btn.pack(ipadx=10, ipady=10, pady=10)
 games_main_frame = tk.Frame(win, background="#02070f")
 games_main_frame.pack(expand=True, fill="both")
 
-tk.Button(games_main_frame, text="<", background="#1a3259", font=40, foreground="gray",
+tk.Button(games_main_frame, text="<", background="#1a3259", font=("Helvetica", 25), foreground="gray",
           command=lambda: switch_page(games_frames, "all", '-', all_games_count)).place(
     anchor="center", relheight=0.5, relx=0.02, rely=0.5)
-tk.Button(games_main_frame, text=">", background="#1a3259", font=40, foreground="gray",
+tk.Button(games_main_frame, text=">", background="#1a3259", font=("Helvetica", 25), foreground="gray",
           command=lambda: switch_page(games_frames, "all", '+', all_games_count)).place(
     anchor="center", relheight=0.5, relx=0.98, rely=0.5)
 
@@ -357,10 +358,10 @@ my_games_title.pack(padx=25, fill="x")
 installed_games_frame = tk.Frame(my_games_main_frame, background="#02070f")
 installed_games_frame.pack(expand=True, fill="both")
 
-tk.Button(installed_games_frame, text="<", background="#1a3259", font=40, foreground="gray",
+tk.Button(installed_games_frame, text="<", background="#1a3259", font=("Helvetica", 25), foreground="gray",
           command=lambda: switch_page(installed_games_frames, "installed", '-', installed_games_count)).place(
     anchor="center", relheight=0.5, relx=0.02, rely=0.5)
-tk.Button(installed_games_frame, text=">", background="#1a3259", font=40, foreground="gray",
+tk.Button(installed_games_frame, text=">", background="#1a3259", font=("Helvetica", 25), foreground="gray",
           command=lambda: switch_page(installed_games_frames, "installed", '+', installed_games_count)).place(
     anchor="center", relheight=0.5, relx=0.98, rely=0.5)
 
@@ -370,10 +371,10 @@ installed_games_count = 0
 
 deleted_games_frame = tk.Frame(my_games_main_frame, background="#02070f")
 
-tk.Button(deleted_games_frame, text="<", background="#1a3259", font=40, foreground="gray",
+tk.Button(deleted_games_frame, text="<", background="#1a3259", font=("Helvetica", 25), foreground="gray",
           command=lambda: switch_page(deleted_games_frames, "deleted", '-', deleted_games_count)).place(
     anchor="center", relheight=0.5, relx=0.02, rely=0.5)
-tk.Button(deleted_games_frame, text=">", background="#1a3259", font=40, foreground="gray",
+tk.Button(deleted_games_frame, text=">", background="#1a3259", font=("Helvetica", 25), foreground="gray",
           command=lambda: switch_page(deleted_games_frames, "deleted", '+', deleted_games_count)).place(
     anchor="center", relheight=0.5, relx=0.98, rely=0.5)
 
